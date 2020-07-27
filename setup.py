@@ -47,8 +47,8 @@ setup_requires = [
 ]
 
 install_requires = [
-    'invenio-oarepo-multilingual',
-    'invenio-oarepo-mapping-includes',
+    'invenio-oarepo-multilingual>=1.0.0',
+    'invenio-oarepo-mapping-includes>=1.0.0',
     'invenio-jsonschemas'
 ]
 
