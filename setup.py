@@ -47,9 +47,15 @@ setup_requires = [
 ]
 
 install_requires = [
+    'idutils',
+    'pycountry',
     'invenio-oarepo-multilingual>=1.0.0',
     'invenio-oarepo-mapping-includes>=1.0.0',
-    'invenio-jsonschemas'
+    'invenio-jsonschemas>=1.0.0',
+    'invenio-rest>=1.0.0',
+    'invenio-records>=1.0.0',
+    'invenio-records-rest>=1.0.0',
+    'invenio-search>=1.0.0'
 ]
 
 packages = find_packages()

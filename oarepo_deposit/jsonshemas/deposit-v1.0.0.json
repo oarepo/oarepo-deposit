@@ -27,9 +27,6 @@
     "_deposit": {
       "type": "../internal-v1.0.0.json#/definitions/DepositMetadata"
     },
-    "_files": {
-      "type": "../internal-v1.0.0.json#/definitions/FileMetadata"
-    },
     "_internal": {
       "type": "../internal-v1.0.0.json#/definitions/InternalMetadata"
     },

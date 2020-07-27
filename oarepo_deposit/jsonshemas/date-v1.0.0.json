@@ -6,7 +6,7 @@
       "properties": {
         "description": {
           "description": "Description of the date interval.",
-          "type": "string"
+          "type": "multilingual-v1.0.0.json#/MultilingualString"
         },
         "end": {
           "description": "End date.",
