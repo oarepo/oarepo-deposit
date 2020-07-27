@@ -1,0 +1,95 @@
+{
+  "ContributorPersonOrOrg": {
+    "additionalProperties": false,
+    "properties": {
+      "affiliation": {
+        "description": "Affiliation for the purpose of this specific record.",
+        "type": "string"
+      },
+      "familyname": {
+        "description": "Family name of person if known.",
+        "type": "string"
+      },
+      "givennames": {
+        "description": "Given names of person if known.",
+        "type": "string"
+      },
+      "gnd": {
+        "description": "Gemeinsame Normdatei identifier for creator.",
+        "type": "string"
+      },
+      "name": {
+        "description": "Full name of person or organisation. Personal name format: family, given.",
+        "type": "string"
+      },
+      "orcid": {
+        "description": "ORCID identifier for creator.",
+        "type": "string"
+      },
+      "type": {
+        "enum": [
+          "ContactPerson",
+          "DataCollector",
+          "DataCurator",
+          "DataManager",
+          "Distributor",
+          "Editor",
+          "HostingInstitution",
+          "Other",
+          "Producer",
+          "ProjectLeader",
+          "ProjectManager",
+          "ProjectMember",
+          "RegistrationAgency",
+          "RegistrationAuthority",
+          "RelatedPerson",
+          "Researcher",
+          "ResearchGroup",
+          "RightsHolder",
+          "Sponsor",
+          "Supervisor",
+          "WorkPackageLeader"
+        ],
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "type"
+    ],
+    "type": "object"
+  },
+  "PersonOrOrg": {
+    "additionalProperties": false,
+    "properties": {
+      "affiliation": {
+        "description": "Affiliation for the purpose of this specific record.",
+        "type": "string"
+      },
+      "familyname": {
+        "description": "Family name of person if known.",
+        "type": "string"
+      },
+      "givennames": {
+        "description": "Given names of person if known.",
+        "type": "string"
+      },
+      "gnd": {
+        "description": "Gemeinsame Normdatei identifier for creator.",
+        "type": "string"
+      },
+      "name": {
+        "description": "Full name of person or organisation. Personal name format: family, given.",
+        "type": "string"
+      },
+      "orcid": {
+        "description": "ORCID identifier for creator.",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name"
+    ],
+    "type": "object"
+  }
+}

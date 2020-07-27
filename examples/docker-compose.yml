@@ -1,0 +1,16 @@
+version: '2.2'
+services:
+  oarepo-deposit-test-es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    container_name: examples-test-es
+    environment:
+      - node.name=es01
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "127.0.0.1:9200:9200"
+  oarepo-deposit-test-cache:
+    image: redis
+    restart: "always"
+    read_only: true
+    ports:
+      - "127.0.0.1:6379:6379"

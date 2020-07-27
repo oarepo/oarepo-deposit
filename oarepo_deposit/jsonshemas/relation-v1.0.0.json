@@ -1,0 +1,33 @@
+{
+  "RelationType": {
+    "description": "Relation type.",
+    "enum": [
+      "isCitedBy",
+      "cites",
+      "isSupplementTo",
+      "isSupplementedBy",
+      "isContinuedBy",
+      "continues",
+      "hasMetadata",
+      "isMetadataFor",
+      "isNewVersionOf",
+      "isPreviousVersionOf",
+      "isPartOf",
+      "hasPart",
+      "isReferencedBy",
+      "references",
+      "isDocumentedBy",
+      "documents",
+      "isCompiledBy",
+      "compiles",
+      "isVariantFormOf",
+      "isOrignialFormOf",
+      "isIdenticalTo",
+      "isReviewedBy",
+      "reviews",
+      "isDerivedFrom",
+      "isSourceOf"
+    ],
+    "type": "string"
+  }
+}

@@ -11,6 +11,8 @@ import os
 
 from setuptools import find_packages, setup
 
+OAREPO_VERSION = os.environ.get('OAREPO_VERSION', '3.2.1')
+
 readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
@@ -25,20 +27,29 @@ tests_require = [
 ]
 
 extras_require = {
-    'tests': tests_require,
+    'tests': [
+        *tests_require,
+        'oarepo[tests]~={version}'.format(
+            version=OAREPO_VERSION)],
+    'tests-es7': [
+        *tests_require,
+        'oarepo[tests-es7]~={version}'.format(
+            version=OAREPO_VERSION)],
 }
+
 
 extras_require['all'] = []
 for reqs in extras_require.values():
     extras_require['all'].extend(reqs)
 
 setup_requires = [
-    'Babel>=1.3',
     'pytest-runner>=3.0.0,<5',
 ]
 
 install_requires = [
-    'Flask-BabelEx>=0.9.4',
+    'invenio-oarepo-multilingual',
+    'invenio-oarepo-mapping-includes',
+    'invenio-jsonschemas'
 ]
 
 packages = find_packages()
@@ -57,7 +68,7 @@ setup(
     long_description=readme + '\n\n' + history,
     keywords='invenio TODO',
     license='MIT',
-    author='CESNET',
+    author='Miroslav Bauer @ CESNET',
     author_email='bauer@cesnet.cz',
     url='https://github.com/oarepo/oarepo-deposit',
     packages=packages,
@@ -65,14 +76,11 @@ setup(
     include_package_data=True,
     platforms='any',
     entry_points={
-        'invenio_base.apps': [
-            'oarepo_deposit = oarepo_deposit:OARepoDeposit',
+        'invenio_oarepo_mapping_includes': [
+            'oarepo_deposit=oarepo_deposit.included_mappings'
         ],
-        'invenio_base.blueprints': [
-            'oarepo_deposit = oarepo_deposit.views:blueprint',
-        ],
-        'invenio_i18n.translations': [
-            'messages = oarepo_deposit',
+        'invenio_jsonschemas.schemas': [
+            'oarepo_deposit = oarepo_deposit.jsonschemas'
         ],
     },
     extras_require=extras_require,
@@ -91,6 +99,6 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
     ],
 )

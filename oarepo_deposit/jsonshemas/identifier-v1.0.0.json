@@ -1,0 +1,161 @@
+{
+  "PID": {
+    "description": "Identifier of the published record - usually the type and value of a 'recid'-type PID of the corresponding published record.",
+    "name": "pid",
+    "properties": {
+      "revision_id": {
+        "description": "ID of the RecordMetadata revision. Used for record merging.",
+        "title": "Record Revision ID",
+        "type": "integer"
+      },
+      "type": {
+        "description": "Type of the PID, in correspondece with PID's 'pid_type' property.",
+        "title": "PID Type",
+        "type": "string"
+      },
+      "value": {
+        "description": "Value of the PID, in correspondece with PID's 'pid_value' property.",
+        "title": "PID Value",
+        "type": "string"
+      }
+    },
+    "title": "Persistent identifier of the published record",
+    "type": "object"
+  },
+  "OAI": {
+    "additionalProperties": false,
+    "description": "OAI-PMH specific information.",
+    "properties": {
+      "id": {
+        "description": "OAI-PMH record identifier.",
+        "type": "string"
+      },
+      "sets": {
+        "description": "OAI-PMH sets for record.",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "updated": {
+        "description": "Last OAI-PMH set update (ISO8601 formatted timestamp)",
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "Alternate": {
+    "description": "Alternate identifiers for record.",
+    "items": {
+      "additionalProperties": false,
+      "properties": {
+        "identifier": {
+          "description": "Identifier of research output.",
+          "type": "string"
+        },
+        "scheme": {
+          "description": "Persistent identifier scheme.",
+          "enum": [
+            "ads",
+            "ark",
+            "arxiv",
+            "bioproject",
+            "biosample",
+            "doi",
+            "ean13",
+            "ean8",
+            "ensembl",
+            "genome",
+            "gnd",
+            "hal",
+            "handle",
+            "isbn",
+            "isni",
+            "issn",
+            "istc",
+            "lsid",
+            "orcid",
+            "pmcid",
+            "pmid",
+            "purl",
+            "refseq",
+            "sra",
+            "uniprot",
+            "url",
+            "urn",
+            "swh",
+            "ascl"
+          ],
+          "type": "string"
+        },
+        "resource_type": {
+          "additionalProperties": false,
+          "description": "Record resource type.",
+          "properties": {
+            "subtype": {
+              "description": "Specific resource type.",
+              "type": "string"
+            },
+            "type": {
+              "default": "publication",
+              "description": "General resource type.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "type": "array"
+  },
+  "PIDScheme": {
+    "description": "Persistent identifier scheme.",
+    "enum": [
+      "ads",
+      "ark",
+      "arxiv",
+      "bioproject",
+      "biosample",
+      "doi",
+      "ean13",
+      "ean8",
+      "ensembl",
+      "genome",
+      "gnd",
+      "hal",
+      "handle",
+      "isbn",
+      "isni",
+      "issn",
+      "istc",
+      "lsid",
+      "orcid",
+      "pmcid",
+      "pmid",
+      "purl",
+      "refseq",
+      "sra",
+      "uniprot",
+      "url",
+      "urn",
+      "swh",
+      "ascl"
+    ],
+    "type": "string"
+  },
+  "RawTextReference": {
+    "description": "Raw textual references when identifier is not known.",
+    "items": {
+      "additionalProperties": false,
+      "properties": {
+        "raw_reference": {
+          "type": "string"
+        }
+      },
+      "title": "Reference",
+      "type": "object"
+    },
+    "type": "array"
+  }
+}

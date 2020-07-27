@@ -9,23 +9,8 @@
 
 from flask import Flask
 
-from oarepo_deposit import OARepoDeposit
-
 
 def test_version():
     """Test version import."""
     from oarepo_deposit import __version__
     assert __version__
-
-
-def test_init():
-    """Test extension initialization."""
-    app = Flask('testapp')
-    ext = OARepoDeposit(app)
-    assert 'oarepo-deposit' in app.extensions
-
-    app = Flask('testapp')
-    ext = OARepoDeposit()
-    assert 'oarepo-deposit' not in app.extensions
-    ext.init_app(app)
-    assert 'oarepo-deposit' in app.extensions

@@ -1,0 +1,176 @@
+{
+  "InternalMetadata": {
+    "additionalProperties": false,
+    "description": "Metadata for internal use only.",
+    "properties": {
+      "comments": {
+        "description": "Comments for internal purposes.",
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "comment": {
+              "description": "Comment.",
+              "type": "string"
+            },
+            "timestamp": {
+              "description": "ISO8601 formatted date time stamp.",
+              "type": "string"
+            },
+            "user_id": {
+              "description": "User making the comment.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "source": {
+        "additionalProperties": false,
+        "description": "Information related to initial source of acquisition.",
+        "properties": {
+          "agents": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "uploader"
+                  ],
+                  "type": "string"
+                },
+                "user_id": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "username": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "type": "object"
+  },
+  "DepositMetadata": {
+    "description": "Internal deposit metadata.",
+    "name": "_deposit",
+    "properties": {
+      "created_by": {
+        "description": "ID of user that created the deposit.",
+        "name": "created_by",
+        "title": "Creator",
+        "type": "integer"
+      },
+      "id": {
+        "description": "Identifier of the deposit - usually the value of corresponding 'depid'-type PID.",
+        "name": "id",
+        "title": "Persistent Identifier of the deposit",
+        "type": "string"
+      },
+      "owners": {
+        "description": "Owners of the deposit (a list of user's IDs).",
+        "items": [
+          {
+            "type": "integer"
+          }
+        ],
+        "name": "owners",
+        "title": "Owners",
+        "type": "array"
+      },
+      "pid": {
+        "type": "../identifier-v1.0.0.json#/definitions/PID"
+      },
+      "status": {
+        "description": "Status of the deposit, either 'draft' or 'published'.",
+        "enum": [
+          "draft",
+          "published"
+        ],
+        "name": "status",
+        "title": "Status",
+        "type": "string"
+      }
+    },
+    "title": "Deposit",
+    "type": "object"
+  },
+  "BucketMetadata": {
+    "properties": {
+      "deposit": {
+        "description": "UUID of the deposit bucket.",
+        "type": "string"
+      },
+      "extra_formats": {
+        "description": "UUID of the extra formats bucket.",
+        "type": "string"
+      },
+      "record": {
+        "description": "UUID of the record bucket.",
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "FileMetadata": {
+    "description": "List of files attached to the record.",
+    "items": {
+      "description": "Describes the information of a single file in the record.",
+      "properties": {
+        "bucket": {
+          "description": "UUID of the bucket to which this file is assigned.",
+          "type": "string"
+        },
+        "checksum": {
+          "description": "Checksum the file. Starts with '<algorithm>:' prefix, e.g.: 'md5:1234abcd...'",
+          "type": "string"
+        },
+        "file_id": {
+          "description": "UUID of the FileInstance object.",
+          "type": "string"
+        },
+        "key": {
+          "description": "Key (filename) of the file.",
+          "type": "string"
+        },
+        "previewer": {
+          "description": "Identifier for previewer needed to preview this file.",
+          "type": "string"
+        },
+        "size": {
+          "description": "Size of the file in bytes.",
+          "type": "integer"
+        },
+        "type": {
+          "description": "File type extension.",
+          "type": "string"
+        },
+        "version_id": {
+          "description": "UUID of the ObjectVersion object.",
+          "type": "string"
+        }
+      },
+      "title": "File schema.",
+      "type": "object"
+    },
+    "type": "array"
+  }
+}

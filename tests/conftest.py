@@ -16,9 +16,6 @@ import tempfile
 
 import pytest
 from flask import Flask
-from flask_babelex import Babel
-
-from oarepo_deposit import OARepoDeposit
 
 
 @pytest.fixture(scope='module')
@@ -35,8 +32,8 @@ def create_app(instance_path):
     """Application factory fixture."""
     def factory(**config):
         app = Flask('testapp', instance_path=instance_path)
+        config['JSONSCHEMAS_ENDPOINT'] = '/schema'
+        config['JSONSCHEMAS_HOST'] = 'localhost:5000'
         app.config.update(**config)
-        Babel(app)
-        OARepoDeposit(app)
         return app
     return factory

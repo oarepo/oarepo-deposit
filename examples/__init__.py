@@ -6,6 +6,4 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Common data model for OA repository records according to Zenodo deposit model."""
 
-from .version import __version__
-
-__all__ = ('__version__',)
+__all__ = ()

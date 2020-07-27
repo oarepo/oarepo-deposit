@@ -1,0 +1,22 @@
+{
+  "ResourceType": {
+    "additionalProperties": false,
+    "description": "Record resource type.",
+    "properties": {
+      "openaire_subtype": {
+        "description": "OpenAIRE-specific resource type.",
+        "type": "string"
+      },
+      "subtype": {
+        "description": "Specific resource type.",
+        "type": "string"
+      },
+      "type": {
+        "default": "publication",
+        "description": "General resource type.",
+        "type": "string"
+      }
+    },
+    "type": "object"
+  }
+}

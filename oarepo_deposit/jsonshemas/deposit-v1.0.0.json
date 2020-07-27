@@ -1,0 +1,256 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": false,
+  "definitions": {
+    "contributor_person_or_org": {
+      "type": "../person-v1.0.0.json#/definitions/ContributorPersonOrOrg"
+    },
+    "person_or_org": {
+      "type": "../person-v1.0.0.json#/definitions/PersonOrOrg"
+    },
+    "relation": {
+      "type": "../relation-v1.0.0.json#definitions#/RelationType"
+    },
+    "scheme": {
+      "type": "../identifier-v1.0.0.json#definitions#/PIDScheme"
+    }
+  },
+  "description": "OARepo deposit record schema.",
+  "id": "http://oarepo.org/schemas/deposits/records/record-v1.0.0.json",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "_buckets": {
+      "type": "../internal-v1.0.0.json#/definitions/BucketMetadata"
+    },
+    "_deposit": {
+      "type": "../internal-v1.0.0.json#/definitions/DepositMetadata"
+    },
+    "_files": {
+      "type": "../internal-v1.0.0.json#/definitions/FileMetadata"
+    },
+    "_internal": {
+      "type": "../internal-v1.0.0.json#/definitions/InternalMetadata"
+    },
+    "_oai": {
+      "type": "../identifier-v.1.0.0.json#/definitions/OAI"
+    },
+    "access_conditions": {
+      "description": "Conditions under which access is given if record is restricted.",
+      "title": "Access conditions",
+      "type": "string"
+    },
+    "access_right": {
+      "default": "open",
+      "description": "Access right for record.",
+      "enum": [
+        "open",
+        "embargoed",
+        "restricted",
+        "closed"
+      ],
+      "type": "string"
+    },
+    "alternate_identifiers": {
+      "type": "../identifier-v.1.0.0.json#/definitions/Alternate"
+    },
+    "communities": {
+      "description": "List of community identifiers.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "conceptdoi": {
+      "description": "Digital Object Identifier (DOI).",
+      "type": "string"
+    },
+    "conceptrecid": {
+      "description": "Invenio record identifier (integer).",
+      "type": "string"
+    },
+    "contributors": {
+      "description": "Contributors in order of importance.",
+      "items": {
+        "type": "../person-v1.0.0.json#/definitions/ContributorPersonOrOrg"
+      },
+      "title": "Contributors",
+      "type": "array"
+    },
+    "creators": {
+      "description": "Creators of record in order of importance.",
+      "items": {
+        "type": "../person-v1.0.0.json#/definitions/PersonOrOrg"
+      },
+      "type": "array"
+    },
+    "custom": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "subject": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "object": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "description": "Custom metadata"
+    },
+    "dates": {
+      "$ref": "../date-v1.0.0.json#/definitions/DateIntervals"
+    },
+    "description": {
+      "description": "Description/abstract for record.",
+      "type": "multilingual-v1.0.0.json#/MultilingualString"
+    },
+    "doi": {
+      "description": "Digital Object Identifier (DOI).",
+      "type": "string"
+    },
+    "embargo_date": {
+      "description": "Embargo date of record (ISO8601 formatted date).",
+      "title": "Embargo Date",
+      "type": "string"
+    },
+    "grants": {
+      "description": "Source of grants/awards which have funded all or part of this particular record.",
+      "items": {
+        "title": "Grant",
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "imprint": {
+      "type": "../publication-v1.0.0.json#/definitions/Imprint"
+    },
+    "journal": {
+      "type": "../publication-v1.0.0.json#/definitions/Journal"
+    },
+    "keywords": {
+      "description": "Free text keywords.",
+      "items": {
+        "title": "Keyword",
+        "type": "string"
+      },
+      "title": "Keywords",
+      "type": "array"
+    },
+    "language": {
+      "description": "ISO 639-3 language code.",
+      "type": "string"
+    },
+    "license": {
+      "description": "License for embargoed/open access content.",
+      "title": "License",
+      "type": "object"
+    },
+    "locations": {
+      "description": "Geographical location.",
+      "items": {
+        "type": "../location-v1.0.0.json#/definitions/Location"
+      },
+      "type": "array"
+    },
+    "method": {
+      "description": "Information about the used Method",
+      "type": "string"
+    },
+    "notes": {
+      "description": "Additional notes for record.",
+      "title": "Additional notes",
+      "type": "string"
+    },
+    "owners": {
+      "description": "List of user ids that are record as owner of record.",
+      "items": {
+        "type": "number"
+      },
+      "type": "array"
+    },
+    "part_of": {
+      "type": "../publication-v1.0.0.json#/definitions/PublicationPart"
+    },
+    "publication_date": {
+      "description": "Record publication date (IS8601-formatted). EDTF support to be added for field.",
+      "type": "string"
+    },
+    "recid": {
+      "description": "Invenio record identifier (integer).",
+      "type": "number"
+    },
+    "references": {
+      "type": "../identifier-v1.0.0.json#/definitions/RawTextReference"
+    },
+    "related_identifiers": {
+      "description": "Related research outputs.",
+      "items": {
+        "properties": {
+          "identifier": {
+            "description": "Identifier of research output.",
+            "type": "string"
+          },
+          "relation": {
+            "type": "../relation-v1.0.0.json#/definitions/RelationType"
+          },
+          "scheme": {
+            "type": "../identifier-v1.0.0.json#/definitions/PIDScheme"
+          },
+          "resource_type": {
+            "type": "../resource-v1.0.0.json#/definitions/ResourceType"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "resource_type": {
+      "type": "../resource-v1.0.0.json#/definitions/ResourceType"
+    },
+    "subjects": {
+      "description": "Record subjects.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "thesis": {
+      "type": "../publication-v1.0.0.json#/definitions/Thesis"
+    },
+    "title": {
+      "type": "multilingual-v1.0.0.json#/MultilingualString"
+    },
+    "version": {
+      "description": "Record version tag.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "_deposit"
+  ],
+  "title": "OARepo Deposit Schema v1.0.0",
+  "type": "object"
+}

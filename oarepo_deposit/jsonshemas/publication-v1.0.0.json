@@ -1,0 +1,81 @@
+{
+  "Imprint": {
+    "additionalProperties": false,
+    "properties": {
+      "isbn": {
+        "type": "string"
+      },
+      "place": {
+        "type": "string"
+      },
+      "publisher": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "Thesis": {
+    "additionalProperties": false,
+    "properties": {
+      "supervisors": {
+        "description": "Supervisors of thesis in order of importance.",
+        "items": {
+          "type": "../person-v1.0.0#/definitions/PersonOrOrg"
+        },
+        "type": "array"
+      },
+      "university": {
+        "description": "Awarding university in case of a thesis.",
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "Journal": {
+    "additionalProperties": false,
+    "description": "Journal in which this record is published.",
+    "properties": {
+      "issue": {
+        "description": "Journal issue.",
+        "title": "Journal issue",
+        "type": "string"
+      },
+      "pages": {
+        "description": "Journal page(s).",
+        "title": "Journal page(s)",
+        "type": "string"
+      },
+      "title": {
+        "description": "Journal title.",
+        "title": "Journal title",
+        "type": "string"
+      },
+      "volume": {
+        "description": "Journal volume.",
+        "title": "Journal volume",
+        "type": "string"
+      },
+      "year": {
+        "description": "Journal year.",
+        "title": "Journal year",
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "PublicationPart": {
+    "additionalProperties": false,
+    "description": "For parts of books and reports.",
+    "properties": {
+      "pages": {
+        "title": "Pages",
+        "type": "string"
+      },
+      "title": {
+        "title": "Title",
+        "type": "string"
+      }
+    },
+    "type": "object"
+  }
+}

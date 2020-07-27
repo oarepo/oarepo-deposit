@@ -25,7 +25,11 @@
 
  Common data model for OA repository records according to Zenodo deposit model
 
-TODO: Please provide feature overview of module
+Usage
+----------
+
+Add this package to your setup.py dependencies and use it via $ref in json schema.
+ES mapping is handled automatically via ES templates.
 
 Further documentation is available on
 https://oarepo-deposit.readthedocs.io/
