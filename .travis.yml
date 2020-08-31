@@ -4,9 +4,16 @@
 #
 # OARepo-Deposit is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+dist: xenial
+
+addons:
+  postgresql: "9.6"
 
 notifications:
   email: false
+
+services:
+  - postgresql
 
 sudo: false
 
@@ -14,30 +21,33 @@ language: python
 
 matrix:
   fast_finish: true
-  allow_failures:
-    # To allow failures, you need to specify the full environment
-    - env: REQUIREMENTS=devel
 
 cache:
   - pip
 
 env:
-  - REQUIREMENTS=lowest
-  - REQUIREMENTS=release DEPLOY=true
-  - REQUIREMENTS=devel
+  global:
+    - POSTGRESQL_SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/invenio"
+    - ES7_DOWNLOAD_URL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.1-linux-x86_64.tar.gz"
+    - ES_HOST=127.0.0.1
+  matrix:
+    - REQUIREMENTS=release EXTRAS=sqlite,tests-es7 ES=$ES7_DOWNLOAD_URL
+    - REQUIREMENTS=release EXTRAS=postgresql,tests-es7 ES=$ES7_DOWNLOAD_URL  OAREPO_VERSION=3.2.0 SQLALCHEMY_DATABASE_URI=$POSTGRESQL_SQLALCHEMY_DATABASE_URI
 
 python:
-  - "3.6"
-  - "3.7"
   - "3.8"
 
 before_install:
-  - "nvm install 6; nvm use 6"
   - "travis_retry pip install --upgrade pip setuptools py"
-  - "travis_retry pip install twine wheel coveralls requirements-builder"
-  - "requirements-builder -e all --level=min setup.py > .travis-lowest-requirements.txt"
-  - "requirements-builder -e all --level=pypi setup.py > .travis-release-requirements.txt"
-  - "requirements-builder -e all --level=dev --req requirements-devel.txt setup.py > .travis-devel-requirements.txt"
+  - "travis_retry pip install twine wheel coveralls requirements-builder pip-tools"
+  - "requirements-builder -e $EXTRAS --level=pypi setup.py > .travis-release-requirements.in"
+  - cat .travis-release-requirements.in
+  - "pip-compile -U --verbose -o .travis-release-requirements.txt .travis-release-requirements.in"
+  - cat .travis-release-requirements.txt
+  - mkdir /tmp/elasticsearch
+  - wget -O - $ES | tar xz --directory=/tmp/elasticsearch --strip-components=1
+  - "/tmp/elasticsearch/bin/elasticsearch &"
+  - sleep 10
 
 install:
   - "travis_retry pip install -r .travis-${REQUIREMENTS}-requirements.txt"
@@ -49,14 +59,22 @@ script:
 after_success:
   - coveralls
 
+# check if release tag is the same as version.py tag
+before_deploy:
+- |-
+  SRCTAG=$(find . -name "version.py" | grep -v 'build' | grep -v '.eggs' | xargs cat | grep '__version__' | sed 's/__version__//' | sed 's/=//g' | sed 's/"//g' | sed "s/'//g" | sed 's/[ \t\n]//g')
+  echo "Version string in sources is $SRCTAG, travis version is $TRAVIS_TAG"
+  test $SRCTAG == $TRAVIS_TAG
+
 deploy:
   provider: pypi
-  user: inveniosoftware
+  user: "__token__"
   password:
-    secure: TODO:PYPISECUREHASH
-  distributions: "compile_catalog sdist bdist_wheel"
+    secure: "fz5GWpz6eg5JxiCfa1Mw8sT37/aNxsEGG7aVAYHrysMITL8UMkM+RmO/hzJweQPWlI7+eL45Vtii1c8ZSZ5TPu0rmp3/Wx6QmrVRS3YtV9P0f4LyGwceYPE+j1xh5YOJ98RVfW6fI0Q6JSvdEDvuk4cXJmNXLWlzA1AyIatM077uuDOKf+Pob72Gr9SvkrLQG4XebksebA+5xnmuJdFgiTFDMGsk3iKc/2QoVebBhpmwhBddPGE6k+5OnogtMWRuQULh5NUUQLd58hYKY/rXQaK9xCVCLboDqig2FrQp39Os5cOAGctgAqOa2e8gP7PULw9oHl5eUnrOwdtwe7/dnBE07moFrcNgLW7bOGrQ+9OahSBZpsfzjl8x2BiSOEMUlUbaxKyVA7u6wvb0VdIYw3kKcZYuRoZvWgeppJO95ajDx3bFva1GZI8QoX63sQps0L5yF8THnO9lFZBxHCDD0dTafZMhTei0ecX7PkUWiOomLlE6bAmxrRm4r67DnOs+dqG1GSTxebChJ4ugn+PCxJ8qW+6pIiWqkKCoxjFAdW8J7PjZKoq6khp7W9wKLPpnuMjiv5NTkjpYp9q+QzU51K7STp6ZP729XvUuaEuRbWQGxhy9IPzr2q9ZDGLJvx9+WElpy8b7WOJoouBtMxsRQAeaDUIz1jgqPlRe9VkmsRA="
+  distributions: "sdist bdist_wheel"
   on:
     tags: true
     python: "3.8"
+    branch: master
     repo: oarepo/oarepo-deposit
-    condition: $DEPLOY = true
+  skip_existing: true

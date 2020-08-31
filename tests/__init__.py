@@ -5,7 +5,8 @@
 # OARepo-Deposit is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-[pytest]
-pep8ignore = docs/conf.py ALL
-addopts = --cov=oarepo_deposit --cov-report=term-missing
-testpaths = tests oarepo_deposit
+"""Pytest configuration.
+
+See https://pytest-invenio.readthedocs.io/ for documentation on which test
+fixtures are available.
+"""

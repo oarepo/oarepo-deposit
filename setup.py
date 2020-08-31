@@ -13,17 +13,10 @@ from setuptools import find_packages, setup
 
 OAREPO_VERSION = os.environ.get('OAREPO_VERSION', '3.2.1')
 
-readme = open('README.rst').read()
+readme = open('README.md').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
-    'check-manifest>=0.25',
-    'coverage>=4.0',
-    'isort>=4.3.3',
-    'pydocstyle>=2.0.0',
-    'pytest-cov>=2.5.1',
-    'pytest-pep8>=1.0.6',
-    'pytest-invenio>=1.2.1',
 ]
 
 extras_require = {
@@ -47,15 +40,6 @@ setup_requires = [
 ]
 
 install_requires = [
-    'idutils',
-    'pycountry',
-    'invenio-oarepo-multilingual>=1.0.0',
-    'invenio-oarepo-mapping-includes>=1.0.0',
-    'invenio-jsonschemas>=1.0.0',
-    'invenio-rest>=1.0.0',
-    'invenio-records>=1.0.0',
-    'invenio-records-rest>=1.0.0',
-    'invenio-search>=1.0.0'
 ]
 
 packages = find_packages()
@@ -72,7 +56,7 @@ setup(
     version=version,
     description=__doc__,
     long_description=readme + '\n\n' + history,
-    keywords='invenio TODO',
+    keywords='oarepo deposit record data model',
     license='MIT',
     author='Miroslav Bauer @ CESNET',
     author_email='bauer@cesnet.cz',
