@@ -5,15 +5,14 @@
 # OARepo-Deposit is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 """Common data model for OA repository records according to Zenodo deposit model."""
-from oarepo_multilingual.marshmallow import MultilingualStringV2
-from invenio_records_rest.schemas.fields import DateString
+from invenio_records_rest.schemas.fields import SanitizedUnicode
 from marshmallow import Schema, fields
 
 
-class DateSchemaV1(Schema):
-    """Schema for date intervals."""
+class LicenseSchemaV1(Schema):
+    """License metadata schema."""
 
-    start = DateString()
-    end = DateString()
-    type = fields.Str(required=True)
-    description = MultilingualStringV2()
+    identifier = SanitizedUnicode(required=True)
+    license = SanitizedUnicode(required=True)
+    source = SanitizedUnicode()
+    url = SanitizedUnicode()

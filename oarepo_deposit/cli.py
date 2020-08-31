@@ -5,11 +5,12 @@
 # OARepo-Deposit is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 """Common data model for OA repository records according to Zenodo deposit model."""
-from invenio_records_rest.schemas.fields import SanitizedUnicode
-from marshmallow import Schema, fields
+
+import click
+from flask.cli import with_appcontext
+from invenio_opendefinition.cli import loadlicenses
 
 
-class FilesSchema(Schema):
-    """Files metadata schema."""
-
-
+@click.group()
+def deposit():
+    """Deposit commands for OArepo."""

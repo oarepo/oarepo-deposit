@@ -11,44 +11,47 @@ import arrow
 import idutils
 import pycountry
 from flask import has_request_context, current_app
-from invenio_oarepo_multilingual.marshmallow import MultilingualStringSchemaV1
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_rest.schemas import StrictKeysMixin
 from invenio_records_rest.schemas.fields import DateString, SanitizedUnicode, SanitizedHTML
-from marshmallow import Schema, validate, fields, validates, ValidationError, validates_schema, missing, pre_load, \
+from marshmallow import Schema, validate, fields, validates, ValidationError, validates_schema, pre_load, \
     post_load, pre_dump
+from oarepo_multilingual.marshmallow import MultilingualStringV2
 from werkzeug.routing import BuildError
 
 from oarepo_deposit.marshmallow.common import RefResolverMixin
 from oarepo_deposit.marshmallow.date import DateSchemaV1
+from oarepo_deposit.marshmallow.grant import GrantSchemaV1
 from oarepo_deposit.marshmallow.identifier import DOIField, RelatedIdentifierSchemaV1, AlternateIdentifierSchemaV1
+from oarepo_deposit.marshmallow.license import LicenseSchemaV1
 from oarepo_deposit.marshmallow.location import LocationSchemaV1
 from oarepo_deposit.marshmallow.person import PersonSchemaV1, ContributorSchemaV1
+from oarepo_deposit.marshmallow.resource import ResourceTypeSchema
 from oarepo_deposit.models import AccessRight
 
 # TODO: replace with translation function
 _ = lambda x: x
 
 
-class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
+class DepositMetadataSchemaV1(StrictKeysMixin, RefResolverMixin, Schema):
     """Common metadata schema."""
-
     doi = DOIField(missing='')
     publication_date = DateString(required=True)
-    title = SanitizedUnicode(required=True, validate=validate.Length(min=3))
+    title = MultilingualStringV2(required=True)
     creators = fields.Nested(
         PersonSchemaV1, many=True, validate=validate.Length(min=1))
     dates = fields.List(
         fields.Nested(DateSchemaV1), validate=validate.Length(min=1))
-    description = MultilingualStringSchemaV1(
-        required=True, validate=validate.Length(min=3))
+    description = MultilingualStringV2(required=True)
     keywords = fields.List(SanitizedUnicode())
     locations = fields.List(
         fields.Nested(LocationSchemaV1))
     notes = SanitizedHTML()
     version = SanitizedUnicode()
     language = SanitizedUnicode()
+    grants = GrantSchemaV1()
+    license = fields.Nested(LicenseSchemaV1)
     access_right = fields.Str(validate=validate.OneOf(
         choices=[
             AccessRight.OPEN,
@@ -57,6 +60,7 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
             AccessRight.CLOSED,
         ],
     ))
+    resource_type = fields.Nested(ResourceTypeSchema)
     embargo_date = DateString()
     access_conditions = SanitizedHTML()
     subjects = fields.List(SanitizedUnicode())
@@ -64,22 +68,27 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
     references = fields.List(SanitizedUnicode(attribute='raw_reference'))
     related_identifiers = fields.Nested(
         RelatedIdentifierSchemaV1, many=True)
+    pid = PersistentIdentifier()
     alternate_identifiers = fields.Nested(
         AlternateIdentifierSchemaV1, many=True)
     method = SanitizedUnicode()
 
+    def get_pid_field(self):
+        """Return pid_field value."""
+        return current_app.config['PIDSTORE_RECID_FIELD']
+
     @validates('locations')
-    def validate_locations(self, value):
+    def validate_locations(self, value, **kwargs):
         """Validate that there should be both latitude and longitude."""
         for location in value:
             if (location.get('lon') and not location.get('lat')) or \
-                (location.get('lat') and not location.get('lon')):
+               (location.get('lat') and not location.get('lon')):
                 raise ValidationError(
                     _('There should be both latitude and longitude.'),
                     field_names=['locations'])
 
     @validates('language')
-    def validate_language(self, value):
+    def validate_language(self, value, **kwargs):
         """Validate that language is ISO 639-3 value."""
         if not pycountry.languages.get(alpha_3=value):
             raise ValidationError(
@@ -88,7 +97,7 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
             )
 
     @validates('dates')
-    def validate_dates(self, value):
+    def validate_dates(self, value, **kwargs):
         """Validate that start date is before the corresponding end date."""
         for interval in value:
             start = arrow.get(interval.get('start'), 'YYYY-MM-DD').date() \
@@ -108,7 +117,7 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
                 )
 
     @validates('embargo_date')
-    def validate_embargo_date(self, value):
+    def validate_embargo_date(self, value, **kwargs):
         """Validate that embargo date is in the future."""
         if arrow.get(value).date() <= arrow.utcnow().date():
             raise ValidationError(
@@ -117,7 +126,7 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
             )
 
     @validates('license')
-    def validate_license_ref(self, value):
+    def validate_license_ref(self, value, **kwargs):
         """Validate if license resolves."""
         if not self.validate_jsonref(value):
             raise ValidationError(
@@ -125,18 +134,8 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
                 field_names=['license'],
             )
 
-    @validates('grants')
-    def validate_grants_ref(self, values):
-        """Validate if license resolves."""
-        for v in values:
-            if not self.validate_jsonref(v):
-                raise ValidationError(
-                    _('Invalid grant.'),
-                    field_names=['grants'],
-                )
-
     @validates('doi')
-    def validate_doi(self, value):
+    def validate_doi(self, value, **kwargs):
         """Validate if doi exists."""
         if value and has_request_context():
             required_doi = self.context.get('required_doi')
@@ -172,7 +171,7 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
                 raise err
 
     @validates_schema()
-    def validate_license(self, data):
+    def validate_license(self, data, **kwargs):
         """Validate license."""
         acc = data.get('access_right')
         if acc in [AccessRight.OPEN, AccessRight.EMBARGOED] and \
@@ -196,7 +195,7 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
     # custom = fields.Method('dump_custom', 'load_custom')
 
     @pre_load()
-    def preload_accessrights(self, data):
+    def preload_accessrights(self, data, **kwargs):
         """Remove invalid access rights combinations."""
         # Default value
         if 'access_right' not in data:
@@ -211,33 +210,39 @@ class DepositMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
         if data.get('access_right') != AccessRight.EMBARGOED:
             data.pop('embargo_date', None)
 
+        return data
+
     @pre_load()
-    def preload_publicationdate(self, data):
+    def preload_publicationdate(self, data, **kwargs):
         """Default publication date."""
         if 'publication_date' not in data:
             data['publication_date'] = arrow.utcnow().date().isoformat()
+        return data
 
     @post_load()
-    def postload_keywords_filter(self, data):
+    def postload_keywords_filter(self, data, **kwargs):
         """Filter empty keywords."""
         if 'keywords' in data:
             data['keywords'] = [
                 kw for kw in data['keywords'] if kw.strip()
             ]
+        return data
 
     @post_load()
-    def postload_references(self, data):
+    def postload_references(self, data, **kwargs):
         """Filter empty references and wrap them."""
         if 'references' in data:
             data['references'] = [
                 {'raw_reference': ref}
                 for ref in data['references'] if ref.strip()
             ]
+        return data
 
 
-class DepositRecordSchemaV1(Schema, StrictKeysMixin):
+class DepositRecordSchemaV1(StrictKeysMixin, Schema):
     """Deposit record schema."""
-
+    metadata = fields.Nested(DepositMetadataSchemaV1)
+    pid = PersistentIdentifier()
     id = fields.Integer(attribute='pid.pid_value', dump_only=True)
     conceptrecid = SanitizedUnicode(
         attribute='metadata.conceptrecid', dump_only=True)
@@ -393,8 +398,18 @@ class DepositRecordSchemaV1(Schema, StrictKeysMixin):
                             'deposit_html', id=draft_child_depid['pid_value'])
         return links
 
+    @post_load()
+    def postload_inject_pid(self, data, **kwargs):
+        """Inject context PID in the RECID field."""
+        # Remove already deserialized "pid" field
+        pid_value = data.pop('pid', None)
+        if pid_value:
+            pid_field = self.get_pid_field()
+            data.setdefault(pid_field, pid_value)
+        return data
+
     @post_load(pass_many=False)
-    def remove_envelope(self, data):
+    def remove_envelope(self, data, **kwargs):
         """Post process data."""
         # Remove envelope
         if 'metadata' in data:

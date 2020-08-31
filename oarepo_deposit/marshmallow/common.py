@@ -10,7 +10,7 @@ from flask import current_app
 from invenio_records import Record
 
 
-def clean_empty(data, keys):
+def clean_empty(data, keys, **kwargs):
     """Clean empty values."""
     for k in keys:
         if k in data and not data[k]:

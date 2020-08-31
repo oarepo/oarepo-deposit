@@ -11,6 +11,8 @@ from six import string_types
 
 from oarepo_deposit.models import AccessRight
 
+# TODO: replace with translation function
+_ = lambda x: x
 
 class ResourceTypeMixin(object):
     """Schema for resource type."""

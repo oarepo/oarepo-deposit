@@ -28,6 +28,9 @@ extras_require = {
         *tests_require,
         'oarepo[tests-es7]~={version}'.format(
             version=OAREPO_VERSION)],
+    'validate': [
+        'oarepo-validate'
+    ]
 }
 
 
@@ -40,6 +43,10 @@ setup_requires = [
 ]
 
 install_requires = [
+    'idutils',
+    'pycountry',
+    'oarepo-multilingual',
+    'invenio-opendefinition'
 ]
 
 packages = find_packages()
@@ -72,6 +79,9 @@ setup(
         'invenio_jsonschemas.schemas': [
             'oarepo_deposit = oarepo_deposit.jsonschemas'
         ],
+        'flask.commands': [
+            'deposit = oarepo_deposit.cli:deposit',
+        ]
     },
     extras_require=extras_require,
     install_requires=install_requires,

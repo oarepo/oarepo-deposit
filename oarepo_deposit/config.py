@@ -7,7 +7,14 @@
 """Common data model for OA repository records according to Zenodo deposit model."""
 
 # TODO: replace with translation function
+from invenio_opendefinition.config import OPENDEFINITION_REST_ENDPOINTS
+from invenio_records_rest.config import RECORDS_REST_ENDPOINTS
+
 _ = lambda x: x
+
+PIDSTORE_RECID_FIELD = 'recid'
+
+RECORDS_REST_ENDPOINTS.update(OPENDEFINITION_REST_ENDPOINTS)
 
 OAREPO_RELATION_TYPES = [
     ('isCitedBy', _('Cited by')),

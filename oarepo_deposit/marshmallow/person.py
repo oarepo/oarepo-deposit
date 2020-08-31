@@ -14,7 +14,7 @@ from oarepo_deposit.marshmallow.common import clean_empty
 from oarepo_deposit.marshmallow.identifier import PersistentId
 
 
-class PersonSchemaV1(Schema, StrictKeysMixin):
+class PersonSchemaV1(StrictKeysMixin, Schema):
     """Schema for a person."""
     familyname = SanitizedUnicode()
     givennames = SanitizedUnicode()
@@ -25,19 +25,19 @@ class PersonSchemaV1(Schema, StrictKeysMixin):
 
     @post_dump(pass_many=False)
     @post_load(pass_many=False)
-    def clean(self, data):
+    def clean(self, data, **kwargs):
         """Clean empty values."""
         return clean_empty(data, ['orcid', 'gnd', 'affiliation'])
 
     @post_load(pass_many=False)
-    def remove_gnd_prefix(self, data):
+    def remove_gnd_prefix(self, data, **kwargs):
         """Remove GND prefix (which idutils normalization adds)."""
         gnd = data.get('gnd')
         if gnd and gnd.startswith('gnd:'):
             data['gnd'] = gnd[len('gnd:'):]
 
     @validates_schema
-    def validate_data(self, data):
+    def validate_data(self, data, **kwargs):
         """Validate schema."""
         name = data.get('name')
         if not name:
@@ -53,7 +53,7 @@ class ContributorSchemaV1(PersonSchemaV1):
     type = fields.Str(required=True)
 
     @validates('type')
-    def validate_type(self, value):
+    def validate_type(self, value, **kwargs):
         """Validate the type."""
         if value not in \
             current_app.config['OAREPO_DEPOSIT_CONTRIBUTOR_DATACITE2MARC']:

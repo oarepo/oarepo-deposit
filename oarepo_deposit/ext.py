@@ -7,8 +7,6 @@
 
 """ Common data model for OA repository records according to Zenodo deposit model"""
 
-from flask_babelex import gettext as _
-
 from . import config
 
 

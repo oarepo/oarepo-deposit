@@ -10,6 +10,7 @@
 See https://pytest-invenio.readthedocs.io/ for documentation on which test
 fixtures are available.
 """
+import datetime
 import json
 import os
 import shutil
@@ -22,9 +23,12 @@ from invenio_app.config import APP_DEFAULT_SECURE_HEADERS
 from invenio_app.factory import create_app
 from invenio_app.limiter import set_rate_limit
 from invenio_db import db as db_
+from invenio_opendefinition.config import OPENDEFINITION_REST_ENDPOINTS
 from invenio_records_rest.utils import allow_all
 from invenio_search import current_search, current_search_client
 from sqlalchemy_utils import database_exists, create_database
+
+from oarepo_deposit.records import DepositRecord
 
 
 @pytest.fixture
@@ -32,6 +36,13 @@ def deposit_url(api):
     """Deposit API URL."""
     with api.test_request_context():
         return url_for('invenio_records_rest.recid_list').replace('/api', '')
+
+
+@pytest.fixture
+def licenses_url(api):
+    """Deposit API URL."""
+    with api.test_request_context():
+        return url_for('invenio_records_rest.od_lic_list').replace('/api', '')
 
 
 @pytest.yield_fixture
@@ -138,7 +149,34 @@ def default_config(tmp_db_path):
     APP_DEFAULT_SECURE_HEADERS['force_https'] = False
     APP_DEFAULT_SECURE_HEADERS['session_cookie_secure'] = False
 
+    records_rest = dict(
+        recid=dict(
+            pid_type='recid',
+            pid_minter='recid',
+            pid_fetcher='recid',
+            record_loaders={
+                'application/json': 'oarepo_validate:json_loader',
+                'application/json-patch+json': 'oarepo_validate:json_loader'
+            },
+            record_serializers={
+                'application/json': 'oarepo_validate:json_response',
+            },
+            search_serializers={
+                'application/json': 'oarepo_validate:json_search',
+            },
+            list_route='/records/',
+            item_route='/records/<pid(recid,record_class="oarepo_deposit.records.DepositRecord):pid_value>',
+            record_class=DepositRecord,
+            create_permission_factory_imp=allow_all,
+            delete_permission_factory_imp=allow_all,
+            update_permission_factory_imp=allow_all,
+            read_permission_factory_imp=allow_all,
+        )
+    )
+    records_rest.update(OPENDEFINITION_REST_ENDPOINTS)
+
     return dict(
+        PIDSTORE_RECID_FIELD='pid',
         RATELIMIT_APPLICATION=wrap_rate_limit,
         CFG_SITE_NAME="testserver",
         DEBUG_TB_ENABLED=False,
@@ -156,28 +194,8 @@ def default_config(tmp_db_path):
         TESTING=True,
         WTF_CSRF_ENABLED=False,
         SEARCH_INDEX_PREFIX='oarepo-test-',
-        RECORDS_REST_ENDPOINTS=dict(
-            recid=dict(
-                pid_type='recid',
-                pid_minter='recid',
-                pid_fetcher='recid',
-                record_serializers={
-                    'application/json': ('invenio_records_rest.serializers'
-                                         ':json_v1_response'),
-                },
-                search_serializers={
-                    'application/json': ('invenio_records_rest.serializers'
-                                         ':json_v1_search'),
-                },
-                list_route='/records/',
-                item_route='/records/<pid(recid):pid_value>',
-                create_permission_factory_imp=allow_all,
-                delete_permission_factory_imp=allow_all,
-                update_permission_factory_imp=allow_all,
-                read_permission_factory_imp=allow_all,
-
-    )
-        )
+        JSONSCHEMAS_HOST='oarepo.org',
+        RECORDS_REST_ENDPOINTS=records_rest
     )
 
 
@@ -238,3 +256,23 @@ def db(app):
     yield db_
     db_.session.remove()
     db_.drop_all()
+
+
+@pytest.fixture
+def minimal_record():
+    """Minimal record."""
+    return {
+        "doi": "10.5072/zenodo.123",
+        "resource_type": {
+            "type": "software",
+        },
+        "publication_date": datetime.datetime.utcnow().date().isoformat(),
+        "title": {"cs-cz": "Test", "cs": "Test"},
+        "creators": [{"name": "Test"}],
+        "description": {"en": "My description"},
+        "license": {
+            "identifier": "MIT",
+            "license": ""
+        },
+        "access_right": "open",
+    }

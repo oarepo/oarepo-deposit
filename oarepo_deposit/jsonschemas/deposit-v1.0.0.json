@@ -16,7 +16,7 @@
     }
   },
   "description": "OARepo deposit record schema.",
-  "id": "http://oarepo.org/schemas/deposits/records/record-v1.0.0.json",
+  "id": "http://oarepo.org/schemas/deposits/deposit-v1.0.0.json",
   "properties": {
     "$schema": {
       "type": "string"
@@ -122,7 +122,7 @@
     },
     "description": {
       "description": "Description/abstract for record.",
-      "type": "multilingual-v1.0.0.json#/MultilingualString"
+      "$ref": "multilingual-v2.0.0.json#/definitions/multilingual"
     },
     "doi": {
       "description": "Digital Object Identifier (DOI).",
@@ -238,7 +238,7 @@
       "type": "../publication-v1.0.0.json#/definitions/Thesis"
     },
     "title": {
-      "type": "multilingual-v1.0.0.json#/MultilingualString"
+      "$ref": "multilingual-v2.0.0.json#/definitions/multilingual"
     },
     "version": {
       "description": "Record version tag.",

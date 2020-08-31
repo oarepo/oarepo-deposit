@@ -48,7 +48,7 @@
       "title": {
         "description": "Journal title.",
         "title": "Journal title",
-        "type": "multilingual-v1.0.0.json#/MultilingualString"
+        "type": "multilingual-v2.0.0.json#/multilingual"
       },
       "volume": {
         "description": "Journal volume.",
@@ -73,7 +73,7 @@
       },
       "title": {
         "title": "Title",
-        "type": "multilingual-v1.0.0.json#/MultilingualString"
+        "type": "multilingual-v2.0.0.json#/multilingual"
       }
     },
     "type": "object"

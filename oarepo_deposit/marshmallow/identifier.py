@@ -43,9 +43,9 @@ class DOIField(SanitizedUnicode):
         self.managed_prefixes = managed_prefixes or []
         self.banned_prefixes = banned_prefixes or []
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         """Deserialize DOI value."""
-        value = super(DOIField, self)._deserialize(value, attr, data)
+        value = super(DOIField, self)._deserialize(value, attr, data, **kwargs)
         value = value.strip()
         if value == '' and not (
             self.required or self.context.get('doi_required')):
@@ -125,7 +125,7 @@ class PersistentId(SanitizedUnicode):
             if self.normalize else value
 
 
-class IdentifierSchemaV1(Schema, StrictKeysMixin):
+class IdentifierSchemaV1(StrictKeysMixin, Schema):
     """Schema for a identifiers.
     During deserialization the schema takes care of detecting the identifier
     scheme if not specified, as well as validating and normalizing the
@@ -153,7 +153,7 @@ class IdentifierSchemaV1(Schema, StrictKeysMixin):
             data['identifier'], data['scheme'])
 
     @validates_schema
-    def validate_data(self, data):
+    def validate_data(self, data, **kwargs):
         """Validate identifier and scheme."""
         id_ = data.get('identifier')
         scheme = data.get('scheme')

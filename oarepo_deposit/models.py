@@ -11,6 +11,7 @@ from datetime import datetime
 import arrow
 from flask import current_app
 from flask_babelex import format_date
+from invenio_records import Record
 from invenio_search import RecordsSearch, current_search_client
 
 # TODO: replace with translation function

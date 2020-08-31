@@ -21,7 +21,7 @@
             "type": "keyword"
           },
           "title": {
-            "type": "text"
+            "type": "multilingual"
           },
           "acronym": {
             "type": "keyword"
@@ -248,7 +248,7 @@
         }
       },
       "description": {
-        "type": "text"
+        "type": "multilingual"
       },
       "keywords": {
         "type": "keyword"
