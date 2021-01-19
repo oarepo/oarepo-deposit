@@ -1,3 +1,5 @@
+_NOTE_ this repository is now DEPRECATED by [oarepo-rdm-records](https://github.com/oarepo/oarepo-rdm-records) and will be deleted in the future
+
 # OArepo Deposit
 
 [![](https://img.shields.io/github/license/oarepo/oarepo-deposit.svg)](https://github.com/oarepo/oarepo-deposit/blob/master/LICENSE)
